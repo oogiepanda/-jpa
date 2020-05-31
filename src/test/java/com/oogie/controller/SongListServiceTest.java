@@ -2,8 +2,8 @@ package com.oogie.controller;
 
 import com.oogie.BaseTest;
 import com.oogie.model.SongListEntity;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -11,7 +11,8 @@ import javax.persistence.Persistence;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 public class SongListServiceTest extends BaseTest {
 
@@ -20,7 +21,7 @@ public class SongListServiceTest extends BaseTest {
     private static final String NAME1 = "Oh Sherrie";
     private static EntityManager entityManager;
 
-    @BeforeClass
+    @BeforeAll
     public static void config() {
         EntityManagerFactory emfactory = Persistence.createEntityManagerFactory( "discography" );
         entityManager = emfactory.createEntityManager( );
@@ -79,6 +80,31 @@ public class SongListServiceTest extends BaseTest {
         assertTrue(retrieve(id).getId() == 0);
     }
 
+
+    @Test
+    public void crudJPA() {
+        SongListEntity origSong = createSongListEntity();
+        songListServiceJPA.create(origSong);
+        List<SongListEntity> songs = retrieve(origSong);
+
+        assertTrue(songs.size() == 1);
+        assertTrue(origSong.getSongName().equalsIgnoreCase(songs.get(0).getSongName()));
+        SongListEntity songListEntity2 = createSongListEntity2();
+        origSong.setSongName(NAME1);
+        origSong.setMusician(NAME1);
+        //songListEntity.setAlbum(NAME1);
+        int id = songs.get(0).getId();
+        //songListEntity.setGenre(NAME1);
+        update(origSong, id);
+        SongListEntity updatedSong = retrieve(id);
+        assertTrue(origSong.getAlbum().equals(updatedSong.getAlbum()));
+        assertTrue(origSong.getYear().intValue() == updatedSong.getYear().intValue());
+        assertTrue(origSong.getGenre().equals(updatedSong.getGenre()));
+        assertTrue(updatedSong.getSongName().equals(NAME1));
+        assertTrue(updatedSong.getMusician().equals(NAME1));
+        delete(id);
+        assertTrue(retrieve(id).getId() == 0);
+    }
 
     private List<SongListEntity> retrieve(SongListEntity songListEntity) {
         return songListService.retrieve(songListEntity);
