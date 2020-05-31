@@ -2,8 +2,12 @@ package com.oogie.controller;
 
 import com.oogie.BaseTest;
 import com.oogie.model.SongListEntity;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +16,18 @@ import static org.junit.Assert.*;
 public class SongListServiceTest extends BaseTest {
 
     private SongListService songListService = new SongListService(conn);
+    private static SongListServiceJPA songListServiceJPA;
     private static final String NAME1 = "Oh Sherrie";
+    private static EntityManager entityManager;
+
+    @BeforeClass
+    public static void config() {
+        EntityManagerFactory emfactory = Persistence.createEntityManagerFactory( "discography" );
+        entityManager = emfactory.createEntityManager( );
+        songListServiceJPA = new SongListServiceJPA(entityManager);
+    }
+
+
 
     private SongListEntity createSongListEntity() {
         SongListEntity songListEntity = new SongListEntity();
