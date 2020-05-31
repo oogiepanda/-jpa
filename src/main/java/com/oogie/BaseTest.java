@@ -1,7 +1,7 @@
 package com.oogie;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,7 +13,8 @@ public class BaseTest {
     static final String USER = "root";
     static final String PASS = "admin";
     static protected Connection conn = null;
-    @BeforeClass
+
+    @BeforeAll
     public static void setUp() {
         try{
             Class.forName(JDBC_DRIVER);
@@ -24,7 +25,7 @@ public class BaseTest {
         }
     }
 
-    @After
+    @AfterAll
     public void cleanUp() {
         try{
             conn.close();

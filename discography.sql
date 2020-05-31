@@ -2,7 +2,7 @@ drop table credential;
 
 drop table song_list;
 
-create table credential (id int not null auto_increment, username varchar(6) not null, password varchar(6) not null, affiliation int, primary key (id));
+create table credentials (id int not null auto_increment, username varchar(6) not null, password varchar(6) not null, affiliation int, primary key (id));
 
 create table song_list (id int not null auto_increment, song_name varchar(50) not null, musician varchar(50), year int, album varchar (50), genre varchar(15), primary key (id));
 
