@@ -2,6 +2,7 @@ package com.oogie.controller;
 
 import com.oogie.BaseTest;
 import com.oogie.model.SongListEntity;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -25,14 +26,20 @@ public class SongListServiceTest extends BaseTest {
     private static final String NAME1 = "Oh Sherrie";
     private static final String NAME2 = "Wheel in the Sky";
     private static EntityManager entityManager;
+    private static EntityManagerFactory emfactory;
 
     @BeforeAll
     public static void config() {
-        EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("discography");
+        emfactory = Persistence.createEntityManagerFactory("discography");
         entityManager = emfactory.createEntityManager();
         songListServiceJPA = new SongListServiceJPA(entityManager);
     }
 
+    @AfterAll
+    public static void destroy() {
+        entityManager.close();
+        emfactory.close();
+    }
 
     private SongListEntity createSongListEntity() {
         SongListEntity songListEntity = new SongListEntity();
