@@ -8,9 +8,13 @@ import org.junit.jupiter.api.Test;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.TableGenerator;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -19,20 +23,20 @@ public class SongListServiceTest extends BaseTest {
     private SongListService songListService = new SongListService(conn);
     private static SongListServiceJPA songListServiceJPA;
     private static final String NAME1 = "Oh Sherrie";
+    private static final String NAME2 = "Wheel in the Sky";
     private static EntityManager entityManager;
 
     @BeforeAll
     public static void config() {
-        EntityManagerFactory emfactory = Persistence.createEntityManagerFactory( "discography" );
-        entityManager = emfactory.createEntityManager( );
+        EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("discography");
+        entityManager = emfactory.createEntityManager();
         songListServiceJPA = new SongListServiceJPA(entityManager);
     }
 
 
-
     private SongListEntity createSongListEntity() {
         SongListEntity songListEntity = new SongListEntity();
-        songListEntity.setSongName("Faithfully");
+        songListEntity.setSongName("Separate");
         songListEntity.setMusician("Journey");
         songListEntity.setYear(1983);
         songListEntity.setAlbum("Revelation");
@@ -61,49 +65,39 @@ public class SongListServiceTest extends BaseTest {
         create(origSong);
         List<SongListEntity> songs = retrieve(origSong);
 
-        //assertTrue(songs.size() == 1);
-        assertTrue(origSong.getSongName().equalsIgnoreCase(songs.get(0).getSongName()));
-        SongListEntity songListEntity2 = createSongListEntity2();
+        assertThat(songs.size(), is(1));
+        assertThat(origSong.getSongName(), is(songs.get(0).getSongName()));
         origSong.setSongName(NAME1);
         origSong.setMusician(NAME1);
-        //songListEntity.setAlbum(NAME1);
         int id = songs.get(0).getId();
-        //songListEntity.setGenre(NAME1);
         update(origSong, id);
         SongListEntity updatedSong = retrieve(id);
-        assertTrue(origSong.getAlbum().equals(updatedSong.getAlbum()));
-        assertTrue(origSong.getYear().intValue() == updatedSong.getYear().intValue());
-        assertTrue(origSong.getGenre().equals(updatedSong.getGenre()));
-        assertTrue(updatedSong.getSongName().equals(NAME1));
-        assertTrue(updatedSong.getMusician().equals(NAME1));
-        delete(id);
-        assertTrue(retrieve(id).getId() == 0);
-    }
+        assertThat(updatedSong.getSongName(), is(NAME1));
+        assertThat(updatedSong.getMusician(), is(NAME1));
 
+        assertThat(origSong.getYear().intValue(), is(updatedSong.getYear().intValue()));
+        assertThat(origSong.getAlbum(), is(updatedSong.getAlbum()));
+        assertThat(origSong.getGenre(), is(updatedSong.getGenre()));
+        delete(id);
+        assertThat(retrieve(id).getId(), is(0));
+    }
 
     @Test
     public void crudJPA() {
         SongListEntity origSong = createSongListEntity();
-        songListServiceJPA.create(origSong);
-        List<SongListEntity> songs = retrieve(origSong);
+        int id = songListServiceJPA.create(origSong);
+        SongListEntity nuSong = songListServiceJPA.retrieve(id);
+        assertThat(nuSong.getSongName(), is(origSong.getSongName()));
 
-        assertTrue(songs.size() == 1);
-        assertTrue(origSong.getSongName().equalsIgnoreCase(songs.get(0).getSongName()));
-        SongListEntity songListEntity2 = createSongListEntity2();
-        origSong.setSongName(NAME1);
-        origSong.setMusician(NAME1);
-        //songListEntity.setAlbum(NAME1);
-        int id = songs.get(0).getId();
-        //songListEntity.setGenre(NAME1);
-        update(origSong, id);
-        SongListEntity updatedSong = retrieve(id);
-        assertTrue(origSong.getAlbum().equals(updatedSong.getAlbum()));
-        assertTrue(origSong.getYear().intValue() == updatedSong.getYear().intValue());
-        assertTrue(origSong.getGenre().equals(updatedSong.getGenre()));
-        assertTrue(updatedSong.getSongName().equals(NAME1));
-        assertTrue(updatedSong.getMusician().equals(NAME1));
-        delete(id);
-        assertTrue(retrieve(id).getId() == 0);
+        nuSong.setSongName(NAME2);
+        songListServiceJPA.update(nuSong, id);
+        SongListEntity thirdSong = songListServiceJPA.retrieve(id);
+        assertThat(thirdSong.getSongName(),is(NAME2));
+
+        songListServiceJPA.delete(id);
+        SongListEntity fourthSong = songListServiceJPA.retrieve(id);
+        assertThat(fourthSong, is(nullValue()));
+
     }
 
     private List<SongListEntity> retrieve(SongListEntity songListEntity) {
@@ -121,6 +115,7 @@ public class SongListServiceTest extends BaseTest {
     public void delete(int id) {
         songListService.delete(id);
     }
+
     public void delete(SongListEntity songListEntity) {
         songListService.delete(songListEntity);
     }

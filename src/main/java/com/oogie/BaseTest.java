@@ -25,7 +25,7 @@ public class BaseTest {
     }
 
     @AfterAll
-    public void cleanUp() {
+    public static void cleanUp() {
         try{
             conn.close();
         }catch(Exception e){
