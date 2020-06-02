@@ -9,7 +9,7 @@ import javax.persistence.Persistence;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
+import java.awt.event.WindowEvent;
 
 public class SongListGui {
     private JPanel panelMain;
@@ -31,20 +31,10 @@ public class SongListGui {
     private JLabel albumLabel;
     private JLabel genreLabel;
 
-    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    static final String DB_URL = "jdbc:mysql://localhost/discography";
-    static final String USER = "root";
-    static final String PASS = "admin";
-    static protected Connection conn = null;
-
     private static EntityManager entityManager;
     private static EntityManagerFactory emfactory;
     private static SongListServiceJPA songListServiceJPA;
     private int id = 0;
-
-    public JFrame getFrame() {
-        return frame;
-    }
 
     public SongListGui() {
         frame = new JFrame();
@@ -119,7 +109,17 @@ public class SongListGui {
                 }
             }
         });
+        frame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowOpened(WindowEvent we) {
+                config();
+            }
 
+            @Override
+            public void windowClosing(WindowEvent windowEvent) {
+                destroy();
+            }
+        });
     }
 
     private SongListEntity createSongListEntity() {
@@ -143,30 +143,6 @@ public class SongListGui {
         return songListEntity;
     }
 
-//    private static void setUp() {
-//        try {
-//            Class.forName(JDBC_DRIVER);
-//            System.out.println("Connecting to database...");
-//            conn = DriverManager.getConnection(DB_URL, USER, PASS);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    private static void cleanUp() {
-//        try {
-//            conn.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        } finally {
-//            try {
-//                if (conn != null)
-//                    conn.close();
-//            } catch (SQLException se) {
-//                se.printStackTrace();
-//            }
-//        }
-//    }
 
     public static void config() {
         emfactory = Persistence.createEntityManagerFactory("discography");
@@ -180,12 +156,8 @@ public class SongListGui {
     }
 
     public static void main(String[] args) {
-        //setUp();
-        config();
         SongListGui songListGui = new SongListGui();
         songListGui.frame.setVisible(true);
         songListGui.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        destroy();
-        //cleanUp();
     }
 }
