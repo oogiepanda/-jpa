@@ -104,7 +104,6 @@ public class SongListServiceTest extends BaseTest {
         songListServiceJPA.delete(id);
         SongListEntity fourthSong = songListServiceJPA.retrieve(id);
         assertThat(fourthSong, is(nullValue()));
-
     }
 
     private List<SongListEntity> retrieve(SongListEntity songListEntity) {
