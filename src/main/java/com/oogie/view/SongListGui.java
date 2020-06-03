@@ -94,9 +94,8 @@ public class SongListGui {
         updateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SongListEntity songListEntity = songListServiceJPA.retrieve(id);
-                songListEntity.setSongName(NUNAME);
-                songListServiceJPA.update(songListEntity, id);
+                SongListEntity nuSong = createSongListEntity();
+                songListServiceJPA.update(nuSong, id);
             }
         });
         deleteButton.addActionListener(new ActionListener() {
