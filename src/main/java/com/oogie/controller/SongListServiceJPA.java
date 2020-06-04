@@ -1,5 +1,7 @@
 package com.oogie.controller;
 
+//import com.mysql.cj.Session;
+
 import com.oogie.model.SongListEntity;
 
 import javax.persistence.EntityManager;
@@ -86,13 +88,22 @@ public class SongListServiceJPA extends BaseServiceJPA {
 
     public void update(SongListEntity ce, int id) {
         SongListEntity songListEntity = entityManager.find(SongListEntity.class, id);
-
         entityManager.getTransaction().begin();
-        songListEntity.setSongName(ce.getSongName());
-        songListEntity.setMusician(ce.getMusician());
-        songListEntity.setYear(ce.getYear());
-        songListEntity.setAlbum(ce.getAlbum());
-        songListEntity.setGenre(ce.getGenre());
+        if (ce.getSongName() != null && !ce.getSongName().isEmpty()) {
+            songListEntity.setSongName(ce.getSongName());
+        }
+        if (ce.getMusician() != null && !ce.getMusician().isEmpty()) {
+            songListEntity.setMusician(ce.getMusician());
+        }
+        if (ce.getYear() != null) {
+            songListEntity.setYear(ce.getYear());
+        }
+        if (ce.getAlbum() != null && !ce.getAlbum().isEmpty()) {
+            songListEntity.setAlbum(ce.getAlbum());
+        }
+        if (ce.getGenre() != null && !ce.getGenre().isEmpty()) {
+            songListEntity.setGenre(ce.getGenre());
+        }
         entityManager.getTransaction().commit();
     }
 
