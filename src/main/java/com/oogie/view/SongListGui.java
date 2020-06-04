@@ -7,9 +7,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.util.List;
 
 public class SongListGui {
     private JPanel panelMain;
@@ -73,6 +75,7 @@ public class SongListGui {
                     id = songListServiceJPA.create(songListEntity);
                 } catch (Exception exception) {
                     System.out.println(exception);
+                    exception.printStackTrace();
                 }
             }
         });
@@ -80,22 +83,31 @@ public class SongListGui {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    SongListEntity songListEntity = songListServiceJPA.retrieve(id);
+                    SongListEntity songListEntity = createSongListEntity();
+                    List<SongListEntity> songs = songListServiceJPA.retrieve(songListEntity);
                     StringBuilder sb = new StringBuilder();
-                    sb.append("Song Name: ").append(songListEntity.getSongName()).append(", Musician: ").append(songListEntity.getMusician())
-                            .append(", Year: ").append(songListEntity.getYear()).append(", Album: ").append(songListEntity.getGenre())
-                            .append(", Genre: ").append(songListEntity.getGenre());
+                    for (SongListEntity s : songs) {
+                        sb.append("ID: ").append(s.getId()).append(", Song Name: ").append(s.getSongName()).append(", Musician: ").append(s.getMusician())
+                                .append(", Year: ").append(s.getYear()).append(", Album: ").append(s.getGenre())
+                                .append(", Genre: ").append(s.getGenre()).append("\n");
+                    }
                     songListTextArea.setText(sb.toString());
                 } catch (Exception exception) {
                     System.out.println(exception);
+                    exception.printStackTrace();
                 }
             }
         });
         updateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SongListEntity nuSong = createSongListEntity();
-                songListServiceJPA.update(nuSong, id);
+                try {
+                    SongListEntity nuSong = createSongListEntity();
+                    songListServiceJPA.update(nuSong, id);
+                } catch (Exception exception) {
+                    System.out.println(exception);
+                    exception.printStackTrace();
+                }
             }
         });
         deleteButton.addActionListener(new ActionListener() {
@@ -105,6 +117,7 @@ public class SongListGui {
                     songListServiceJPA.delete(id);
                 } catch (Exception exception) {
                     System.out.println(exception);
+                    exception.printStackTrace();
                 }
             }
         });

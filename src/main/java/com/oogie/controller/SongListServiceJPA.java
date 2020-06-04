@@ -2,10 +2,12 @@ package com.oogie.controller;
 
 //import com.mysql.cj.Session;
 
+import com.mysql.cj.util.StringUtils;
 import com.oogie.model.SongListEntity;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 public class SongListServiceJPA extends BaseServiceJPA {
@@ -30,13 +32,34 @@ public class SongListServiceJPA extends BaseServiceJPA {
     }
 
     public List<SongListEntity> retrieve(SongListEntity ce) {
-        entityManager.getTransaction().begin();
-        List<SongListEntity> songListEntities = entityManager.createNativeQuery(
-                "SELECT * FROM song_list", SongListEntity.class)
-                .getResultList();
-        entityManager.getTransaction().commit();
-        return songListEntities;
+//        entityManager.getTransaction().begin();
+//        List<SongListEntity> songListEntities = entityManager.createNativeQuery(
+//                "SELECT * FROM song_list", SongListEntity.class)
+//                .getResultList();
+//        entityManager.getTransaction().commit();
+//        return songListEntities;
 
+            StringBuilder sql = new StringBuilder("select s from SongListEntity s where 1 = 1"); //Note: the statement is HQL, not SQL
+            if (!StringUtils.isNullOrEmpty(ce.getSongName())) {
+                sql.append(" and song_name = '").append(ce.getSongName()).append("'");
+            }
+            if (!StringUtils.isNullOrEmpty(ce.getMusician())) {
+                sql.append(" and musician = '").append(ce.getMusician()).append("'");
+            }
+            if (ce.getYear() != null) {
+                sql.append(" and year = ").append(ce.getYear()).append(" ");
+            }
+            if (!StringUtils.isNullOrEmpty(ce.getAlbum())) {
+                sql.append(" and album = '").append(ce.getAlbum()).append("'");
+            }
+            if (!StringUtils.isNullOrEmpty(ce.getGenre())) {
+                sql.append(" and genre = '").append(ce.getGenre()).append("'");
+            }
+            System.out.println(sql);
+
+        TypedQuery<SongListEntity> query = entityManager.createQuery(sql.toString(), SongListEntity.class);
+        List<SongListEntity> songs = query.getResultList();
+        return songs;
 
 //        Statement stmt = null;
 //
