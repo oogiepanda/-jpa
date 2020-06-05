@@ -7,7 +7,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -15,7 +14,7 @@ import java.util.List;
 
 public class SongListGui {
     private JPanel panelMain;
-    private JFrame frame;
+    public JFrame frame;
     private JTextField songNameTextField;
     private JTextField musicianTextField;
     private JTextField yearTextField;
@@ -24,7 +23,6 @@ public class SongListGui {
     private JButton createButton;
     private JButton retrieveButton;
     private JButton updateButton;
-    private String NUNAME = "Hello";
     private JButton deleteButton;
     private JTextArea songListTextArea;
     private JLabel songNameLabel;
@@ -74,7 +72,6 @@ public class SongListGui {
                     SongListEntity songListEntity = createSongListEntity();
                     id = songListServiceJPA.create(songListEntity);
                 } catch (Exception exception) {
-                    System.out.println(exception);
                     exception.printStackTrace();
                 }
             }
@@ -93,7 +90,6 @@ public class SongListGui {
                     }
                     songListTextArea.setText(sb.toString());
                 } catch (Exception exception) {
-                    System.out.println(exception);
                     exception.printStackTrace();
                 }
             }
@@ -105,7 +101,6 @@ public class SongListGui {
                     SongListEntity nuSong = createSongListEntity();
                     songListServiceJPA.update(nuSong, id);
                 } catch (Exception exception) {
-                    System.out.println(exception);
                     exception.printStackTrace();
                 }
             }
@@ -116,7 +111,6 @@ public class SongListGui {
                 try {
                     songListServiceJPA.delete(id);
                 } catch (Exception exception) {
-                    System.out.println(exception);
                     exception.printStackTrace();
                 }
             }

@@ -1,7 +1,7 @@
 package com.oogie.controller;
 
-import com.mysql.cj.util.StringUtils;
 import com.oogie.model.SongListEntity;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -17,7 +17,7 @@ public class SongListServiceJPA extends BaseServiceJPA {
     }
 
 
-    private SongListEntity clone (SongListEntity song) {
+    private SongListEntity clone(SongListEntity song) {
         SongListEntity clone = new SongListEntity();
         clone.setSongName(song.getSongName());
         clone.setMusician(song.getMusician());
@@ -31,7 +31,6 @@ public class SongListServiceJPA extends BaseServiceJPA {
         entityManager.getTransaction().begin();
         SongListEntity song = clone(ce);
         entityManager.persist(song);
-//        entityManager.persist(ce);
         Query query = entityManager.createNativeQuery("select max(id) from song_list;");
         int val = (int) query.getSingleResult();
         entityManager.getTransaction().commit();
@@ -71,7 +70,7 @@ public class SongListServiceJPA extends BaseServiceJPA {
         return songs;
     }
 
-    private boolean isEmpty (SongListEntity song) {
+    private boolean isEmpty(SongListEntity song) {
         return (isNullOrEmpty(song.getSongName()) &&
                 isNullOrEmpty(song.getMusician()) &&
                 song.getYear() == null &&

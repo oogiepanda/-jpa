@@ -100,7 +100,7 @@ public class SongListServiceTest extends BaseTest {
         nuSong.setSongName(NAME2);
         songListServiceJPA.update(nuSong, id);
         SongListEntity thirdSong = songListServiceJPA.retrieve(id);
-        assertThat(thirdSong.getSongName(),is(NAME2));
+        assertThat(thirdSong.getSongName(), is(NAME2));
 
         songListServiceJPA.delete(id);
         SongListEntity fourthSong = songListServiceJPA.retrieve(id);
@@ -145,7 +145,7 @@ public class SongListServiceTest extends BaseTest {
         return songListService.retrieve(songListEntity);
     }
 
-    private SongListEntity clone (SongListEntity song, int id) {
+    private SongListEntity clone(SongListEntity song, int id) {
         SongListEntity clone = new SongListEntity();
         clone.setId(id);
         clone.setSongName(song.getSongName());
@@ -156,7 +156,7 @@ public class SongListServiceTest extends BaseTest {
         return clone;
     }
 
-    private List<SongListEntity> createAndStoreId (int counter) {
+    private List<SongListEntity> createAndStoreId(int counter) {
         List<SongListEntity> songs = new ArrayList<>();
         for (int i = 0; i < counter; i++) {
             SongListEntity nuSong = createSongListEntity();
