@@ -13,6 +13,7 @@ public class SongListEntity {
     private String genre;
 
     @Id
+    @GeneratedValue
     @Column(name = "id")
     public int getId() {
         return id;

@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TableGenerator;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,8 +107,64 @@ public class SongListServiceTest extends BaseTest {
         assertThat(fourthSong, is(nullValue()));
     }
 
+
+    @Test
+    public void retrieveNoResults() {
+        SongListEntity searchSong = new SongListEntity();
+        List<SongListEntity> songs = songListServiceJPA.retrieve(searchSong);
+        assertThat(songs.isEmpty(), is(true));
+    }
+
+
+    @Test
+    public void retrieveOneResult() {
+        SongListEntity origSong = createSongListEntity();
+        int id = songListServiceJPA.create(origSong);
+        SongListEntity searchSong = new SongListEntity();
+        searchSong.setSongName(origSong.getSongName());
+        List<SongListEntity> songs = songListServiceJPA.retrieve(searchSong);
+        assertThat(songs.size(), is(1));
+        delete(id);
+    }
+
+
+    @Test
+    public void retrieveManyResults() {
+        SongListEntity origSong = createSongListEntity();
+        List<SongListEntity> nuSongs = createAndStoreId(3);
+        SongListEntity searchSong = new SongListEntity();
+        searchSong.setSongName(origSong.getSongName());
+        List<SongListEntity> songs = songListServiceJPA.retrieve(searchSong);
+        assertThat(songs.size(), is(3));
+        for (SongListEntity s : nuSongs) {
+            songListService.delete(s.getId());
+        }
+    }
+
     private List<SongListEntity> retrieve(SongListEntity songListEntity) {
         return songListService.retrieve(songListEntity);
+    }
+
+    private SongListEntity clone (SongListEntity song, int id) {
+        SongListEntity clone = new SongListEntity();
+        clone.setId(id);
+        clone.setSongName(song.getSongName());
+        clone.setMusician(song.getMusician());
+        clone.setYear(song.getYear());
+        clone.setAlbum(song.getAlbum());
+        clone.setGenre(song.getGenre());
+        return clone;
+    }
+
+    private List<SongListEntity> createAndStoreId (int counter) {
+        List<SongListEntity> songs = new ArrayList<>();
+        for (int i = 0; i < counter; i++) {
+            SongListEntity nuSong = createSongListEntity();
+            int id = songListServiceJPA.create(nuSong);
+            SongListEntity clone = clone(nuSong, id);
+            songs.add(clone);
+        }
+        return songs;
     }
 
     private SongListEntity retrieve(int id) {
@@ -120,9 +177,5 @@ public class SongListServiceTest extends BaseTest {
 
     public void delete(int id) {
         songListService.delete(id);
-    }
-
-    public void delete(SongListEntity songListEntity) {
-        songListService.delete(songListEntity);
     }
 }
