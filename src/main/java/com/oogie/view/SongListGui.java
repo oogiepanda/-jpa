@@ -120,7 +120,6 @@ public class SongListGui {
             public void windowOpened(WindowEvent we) {
                 config();
             }
-
             @Override
             public void windowClosing(WindowEvent windowEvent) {
                 destroy();

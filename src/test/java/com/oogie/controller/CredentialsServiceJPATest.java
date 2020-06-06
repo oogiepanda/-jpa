@@ -45,6 +45,12 @@ class CredentialsServiceJPATest extends BaseTest {
     }
 
     @Test
+    public void create() {
+        CredentialsEntity original = createCredentialsEntity();
+        int id = credentialsServiceJPA.create(original);
+    }
+
+    @Test
     public void crudJPA() {
         CredentialsEntity original = createCredentialsEntity();
         int id = credentialsServiceJPA.create(original);
