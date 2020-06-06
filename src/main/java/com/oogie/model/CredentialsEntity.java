@@ -11,6 +11,7 @@ public class CredentialsEntity {
     private Integer affiliation;
 
     @Id
+    @GeneratedValue
     @Column(name = "id")
     public int getId() {
         return id;

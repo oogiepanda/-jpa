@@ -1,6 +1,6 @@
 package com.oogie.view;
 
-import com.oogie.controller.CredentialsService;
+import com.oogie.controller.CredentialsServiceJPA;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -15,7 +15,7 @@ public class CredentialsCheck {
     private JLabel usernameLabel;
     private JLabel passwordLabel;
 
-    private static CredentialsService credentialsService;
+    private static CredentialsServiceJPA credentialsServiceJPA;
 
     public CredentialsCheck() {
         frame = new JFrame();

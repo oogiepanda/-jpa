@@ -9,15 +9,12 @@ import org.junit.jupiter.api.Test;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.TableGenerator;
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class SongListServiceTest extends BaseTest {
@@ -137,7 +134,7 @@ public class SongListServiceTest extends BaseTest {
         List<SongListEntity> songs = songListServiceJPA.retrieve(searchSong);
         assertThat(songs.size(), is(3));
         for (SongListEntity s : nuSongs) {
-            songListService.delete(s.getId());
+            songListServiceJPA.delete(s.getId());
         }
     }
 
