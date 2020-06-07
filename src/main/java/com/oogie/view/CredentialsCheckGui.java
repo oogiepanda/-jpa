@@ -14,19 +14,20 @@ public class CredentialsCheckGui {
     public JFrame frame;
     private JTextField usernameTextField;
     private JPasswordField passwordPField;
-    private JButton confirmButton;
+    private JButton logInButton;
+    private JButton guestButton;
     private JLabel usernameLabel;
     private JLabel passwordLabel;
 
-    //private final MainApp mainApp;
-    //private final EntityManager entityManager;
+    private final MainApp mainApp;
+    private final EntityManager entityManager;
     private CredentialsServiceJPA credentialsServiceJPA;
 
     public List<CredentialsEntity> credentials;
 
     public CredentialsCheckGui(final MainApp mainApp, final EntityManager entityManager) {
-        //this.mainApp = mainApp;
-        //this.entityManager = entityManager;
+        this.mainApp = mainApp;
+        this.entityManager = entityManager;
         credentialsServiceJPA = new CredentialsServiceJPA(entityManager);
         frame = new JFrame();
         frame.setTitle("Enter Your Credentials");
@@ -39,9 +40,10 @@ public class CredentialsCheckGui {
         panelMain.add(usernameTextField);
         panelMain.add(passwordLabel);
         panelMain.add(passwordPField);
-        panelMain.add(confirmButton);
+        panelMain.add(logInButton);
+        panelMain.add(guestButton);
 
-        confirmButton.addActionListener(new ActionListener() {
+        logInButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!usernameTextField.getText().isEmpty() &&
@@ -52,10 +54,7 @@ public class CredentialsCheckGui {
                         CredentialsEntity credentialsEntity = createCredentialsEntity();
                         credentials = credentialsServiceJPA.retrieve(credentialsEntity);
                         if (credentials.size() != 0) {
-                            SongListGui songListGui = new SongListGui(mainApp, entityManager, credentials);
-                            songListGui.frame.setVisible(true);
-                            songListGui.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                            frame.dispose();
+                            openSongListWindow();
                         }
                     } catch (Exception exception) {
                         exception.printStackTrace();
@@ -63,6 +62,19 @@ public class CredentialsCheckGui {
                 }
             }
         });
+        guestButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openSongListWindow();
+            }
+        });
+    }
+
+    private void openSongListWindow() {
+        SongListGui songListGui = new SongListGui(mainApp, entityManager, credentials);
+        songListGui.frame.setVisible(true);
+        songListGui.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.dispose();
     }
 
     private CredentialsEntity createCredentialsEntity() {
