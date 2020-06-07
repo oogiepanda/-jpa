@@ -1,11 +1,11 @@
 package com.oogie.view;
 
+import com.oogie.controller.CredentialsServiceJPA;
 import com.oogie.controller.SongListServiceJPA;
+import com.oogie.model.CredentialsEntity;
 import com.oogie.model.SongListEntity;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,6 +15,7 @@ import java.util.List;
 public class SongListGui {
     private JPanel panelMain;
     public JFrame frame;
+    private JOptionPane emptyOPane;
     private JTextField songNameTextField;
     private JTextField musicianTextField;
     private JTextField yearTextField;
@@ -31,12 +32,18 @@ public class SongListGui {
     private JLabel albumLabel;
     private JLabel genreLabel;
 
-    private static EntityManager entityManager;
-    private static EntityManagerFactory emfactory;
-    private static SongListServiceJPA songListServiceJPA;
+    //private final MainApp mainApp;
+    //private final EntityManager entityManager;
+    private SongListServiceJPA songListServiceJPA;
     private int id = 0;
 
-    public SongListGui() {
+    private List<CredentialsEntity> credentials;
+
+    public SongListGui(final MainApp mainApp, final EntityManager entityManager, final List<CredentialsEntity> credentials) {
+        //this.mainApp = mainApp;
+        //this.entityManager = entityManager;
+        this.credentials = credentials;
+        songListServiceJPA = new SongListServiceJPA(entityManager);
         frame = new JFrame();
         frame.setTitle("Song List Storage");
         frame.setSize(300, 350);
@@ -48,6 +55,7 @@ public class SongListGui {
         genreTextField = new JTextField(20);
         songListTextArea = new JTextArea(5, 25);
         songListTextArea.setEditable(false);
+
         frame.setContentPane(panelMain);
         panelMain.add(songNameLabel);
         panelMain.add(songNameTextField);
@@ -71,6 +79,14 @@ public class SongListGui {
                 try {
                     SongListEntity songListEntity = createSongListEntity();
                     id = songListServiceJPA.create(songListEntity);
+                    retrieveButton.setEnabled(true);
+                    CredentialsEntity credentialsEntity = credentials.get(0);
+                    if (isAdmin(credentialsEntity) || isUser(credentialsEntity)) {
+                        updateButton.setEnabled(true);
+                        if (isAdmin(credentialsEntity)) {
+                            deleteButton.setEnabled(true);
+                        }
+                    }
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
@@ -82,6 +98,7 @@ public class SongListGui {
                 try {
                     SongListEntity songListEntity = createSongListEntity();
                     List<SongListEntity> songs = songListServiceJPA.retrieve(songListEntity);
+
                     StringBuilder sb = new StringBuilder();
                     for (SongListEntity s : songs) {
                         sb.append("ID: ").append(s.getId()).append(", Song Name: ").append(s.getSongName()).append(", Musician: ").append(s.getMusician())
@@ -110,6 +127,7 @@ public class SongListGui {
             public void actionPerformed(ActionEvent e) {
                 try {
                     songListServiceJPA.delete(id);
+
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
@@ -118,13 +136,33 @@ public class SongListGui {
         frame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowOpened(WindowEvent we) {
-                config();
+                updateButton.setEnabled(false);
+                deleteButton.setEnabled(false);
+                if (isAdmin(credentials.get(0))) {
+                    updateButton.setEnabled(true);
+                    deleteButton.setEnabled(true);
+                } else if (isUser(credentials.get(0))) {
+                    updateButton.setEnabled(true);
+                }
             }
+
             @Override
             public void windowClosing(WindowEvent windowEvent) {
-                destroy();
+                mainApp.destroy();
+            }
+            @Override
+            public void windowClosed(WindowEvent we) {
+                mainApp.destroy();
             }
         });
+    }
+
+    private boolean isAdmin(CredentialsEntity ce) {
+        return ce.getAffiliation() == 1;
+    }
+
+    private boolean isUser(CredentialsEntity ce) {
+        return ce.getAffiliation() == 2;
     }
 
     private SongListEntity createSongListEntity() {
@@ -146,23 +184,5 @@ public class SongListGui {
             }
         }
         return songListEntity;
-    }
-
-
-    public static void config() {
-        emfactory = Persistence.createEntityManagerFactory("discography");
-        entityManager = emfactory.createEntityManager();
-        songListServiceJPA = new SongListServiceJPA(entityManager);
-    }
-
-    public static void destroy() {
-        entityManager.close();
-        emfactory.close();
-    }
-
-    public static void main(String[] args) {
-        SongListGui songListGui = new SongListGui();
-        songListGui.frame.setVisible(true);
-        songListGui.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 }

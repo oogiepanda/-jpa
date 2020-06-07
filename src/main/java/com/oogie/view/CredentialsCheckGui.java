@@ -4,28 +4,30 @@ import com.oogie.controller.CredentialsServiceJPA;
 import com.oogie.model.CredentialsEntity;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
 import java.util.List;
 
-public class CredentialsCheck {
+public class CredentialsCheckGui {
     private JPanel panelMain;
-    private JFrame frame;
+    public JFrame frame;
     private JTextField usernameTextField;
     private JPasswordField passwordPField;
     private JButton confirmButton;
     private JLabel usernameLabel;
     private JLabel passwordLabel;
 
-    private static EntityManager entityManager;
-    private static EntityManagerFactory emfactory;
-    private static CredentialsServiceJPA credentialsServiceJPA;
+    //private final MainApp mainApp;
+    //private final EntityManager entityManager;
+    private CredentialsServiceJPA credentialsServiceJPA;
 
-    public CredentialsCheck() {
+    public List<CredentialsEntity> credentials;
+
+    public CredentialsCheckGui(final MainApp mainApp, final EntityManager entityManager) {
+        //this.mainApp = mainApp;
+        //this.entityManager = entityManager;
+        credentialsServiceJPA = new CredentialsServiceJPA(entityManager);
         frame = new JFrame();
         frame.setTitle("Enter Your Credentials");
         frame.setSize(275, 180);
@@ -48,27 +50,17 @@ public class CredentialsCheck {
                         passwordPField.getPassword().length <= 6) {
                     try {
                         CredentialsEntity credentialsEntity = createCredentialsEntity();
-                        List<CredentialsEntity> credentials = credentialsServiceJPA.retrieve(credentialsEntity);
+                        credentials = credentialsServiceJPA.retrieve(credentialsEntity);
                         if (credentials.size() != 0) {
-                            SongListGui songListGui = new SongListGui();
+                            SongListGui songListGui = new SongListGui(mainApp, entityManager, credentials);
                             songListGui.frame.setVisible(true);
+                            songListGui.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                             frame.dispose();
                         }
                     } catch (Exception exception) {
                         exception.printStackTrace();
                     }
                 }
-            }
-        });
-        frame.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowOpened(WindowEvent we) {
-                config();
-            }
-
-            @Override
-            public void windowClosing(WindowEvent we) {
-                destroy();
             }
         });
     }
@@ -83,22 +75,5 @@ public class CredentialsCheck {
         }
         credentialsEntity.setPassword(sb.toString());
         return credentialsEntity;
-    }
-
-    public static void config() {
-        emfactory = Persistence.createEntityManagerFactory("discography");
-        entityManager = emfactory.createEntityManager();
-        credentialsServiceJPA = new CredentialsServiceJPA(entityManager);
-    }
-
-    public static void destroy() {
-        entityManager.close();
-        emfactory.close();
-    }
-
-    public static void main(String[] args) {
-        CredentialsCheck credentialsCheck = new CredentialsCheck();
-        credentialsCheck.frame.setVisible(true);
-        credentialsCheck.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 }

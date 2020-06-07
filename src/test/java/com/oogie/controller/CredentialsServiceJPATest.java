@@ -44,9 +44,27 @@ class CredentialsServiceJPATest extends BaseTest {
         return credentialsEntity;
     }
 
+
+    private CredentialsEntity createCredentialsEntity2() {
+        CredentialsEntity credentialsEntity = new CredentialsEntity();
+        credentialsEntity.setUsername("Gogo");
+        credentialsEntity.setPassword("speed");
+        credentialsEntity.setAffiliation(2);
+        return credentialsEntity;
+    }
+
+
+    private CredentialsEntity createCredentialsEntity3() {
+        CredentialsEntity credentialsEntity = new CredentialsEntity();
+        credentialsEntity.setUsername("Boom");
+        credentialsEntity.setPassword("watch");
+        credentialsEntity.setAffiliation(3);
+        return credentialsEntity;
+    }
+
     @Test
     public void create() {
-        CredentialsEntity original = createCredentialsEntity();
+        CredentialsEntity original = createCredentialsEntity3();
         int id = credentialsServiceJPA.create(original);
     }
 
