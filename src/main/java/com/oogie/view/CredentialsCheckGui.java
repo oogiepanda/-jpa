@@ -42,23 +42,28 @@ public class CredentialsCheckGui {
         panelMain.add(passwordPField);
         panelMain.add(logInButton);
         panelMain.add(guestButton);
-
         logInButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!usernameTextField.getText().isEmpty() &&
-                        usernameTextField.getText().length() <= 6 &&
-                        passwordPField.getPassword().length > 0 &&
-                        passwordPField.getPassword().length <= 6) {
-                    try {
-                        CredentialsEntity credentialsEntity = createCredentialsEntity();
-                        credentials = credentialsServiceJPA.retrieve(credentialsEntity);
-                        if (credentials.size() != 0) {
-                            openSongListWindow();
+                        passwordPField.getPassword().length > 0) {
+                    if (usernameTextField.getText().length() <= 6 && passwordPField.getPassword().length <= 6) {
+                        try {
+                            CredentialsEntity credentialsEntity = createCredentialsEntity();
+                            credentials = credentialsServiceJPA.retrieve(credentialsEntity);
+                            if (!credentials.isEmpty()) {
+                                openSongListWindow();
+                            } else {
+                                JOptionPane.showMessageDialog(frame, "Error. Invalid credentials.");
+                            }
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
                         }
-                    } catch (Exception exception) {
-                        exception.printStackTrace();
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Error. Username/Password must be no greater than 6 characters.");
                     }
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Error. Please enter your username and password.");
                 }
             }
         });
