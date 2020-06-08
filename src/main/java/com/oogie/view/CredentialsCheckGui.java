@@ -15,7 +15,6 @@ public class CredentialsCheckGui {
     private JTextField usernameTextField;
     private JPasswordField passwordPField;
     private JButton logInButton;
-    private JButton guestButton;
     private JLabel usernameLabel;
     private JLabel passwordLabel;
 
@@ -41,7 +40,6 @@ public class CredentialsCheckGui {
         panelMain.add(passwordLabel);
         panelMain.add(passwordPField);
         panelMain.add(logInButton);
-        panelMain.add(guestButton);
         logInButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -65,12 +63,6 @@ public class CredentialsCheckGui {
                 } else {
                     JOptionPane.showMessageDialog(frame, "Error. Please enter your username and password.");
                 }
-            }
-        });
-        guestButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                openSongListWindow();
             }
         });
     }
