@@ -9,12 +9,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainApp {
     private EntityManagerFactory emfactory;
     private EntityManager entityManager;
-    List<CredentialsEntity> credentials;
+    List<CredentialsEntity> credentials = new ArrayList<>();
 
     public static void main(String[] args) {
         MainApp mainApp = new MainApp();
@@ -46,12 +47,20 @@ public class MainApp {
         guestButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                CredentialsEntity guestCred = createGuestCred();
+                credentials.add(guestCred);
                 SongListGui songListGui = new SongListGui(mainApp, entityManager, credentials);
                 songListGui.frame.setVisible(true);
                 songListGui.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                 frame.dispose();
             }
         });
+    }
+
+    private CredentialsEntity createGuestCred() {
+        CredentialsEntity credentialsEntity = new CredentialsEntity();
+        credentialsEntity.setAffiliation(0);
+        return credentialsEntity;
     }
 
     public void config() {

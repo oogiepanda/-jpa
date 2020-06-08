@@ -10,10 +10,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.util.List;
+import java.util.Scanner;
 
 public class SongListGui {
     private JPanel panelMain;
     public JFrame frame;
+    private JTextField idTextField;
     private JTextField songNameTextField;
     private JTextField musicianTextField;
     private JTextField yearTextField;
@@ -24,6 +26,7 @@ public class SongListGui {
     private JButton updateButton;
     private JButton deleteButton;
     private JTextArea songListTextArea;
+    private JLabel idLabel;
     private JLabel songNameLabel;
     private JLabel musicianLabel;
     private JLabel yearLabel;
@@ -42,6 +45,7 @@ public class SongListGui {
         frame.setTitle("Song List Storage");
         frame.setSize(300, 350);
         panelMain = new JPanel();
+        idTextField = new JTextField(20);
         songNameTextField = new JTextField(20);
         musicianTextField = new JTextField(20);
         yearTextField = new JTextField(20);
@@ -51,6 +55,10 @@ public class SongListGui {
         songListTextArea.setEditable(false);
 
         frame.setContentPane(panelMain);
+        if (isAdmin(credentials.get(0))) {
+            panelMain.add(idLabel);
+            panelMain.add(idTextField);
+        }
         panelMain.add(songNameLabel);
         panelMain.add(songNameTextField);
         panelMain.add(musicianLabel);
@@ -112,10 +120,24 @@ public class SongListGui {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    songListServiceJPA.delete(id);
-
+                    if (!idTextField.getText().isEmpty()) {
+                        Scanner s = new Scanner(idTextField.getText());
+                        boolean check = true;
+                        if (!s.hasNextInt()) {
+                            check = false;
+                        }
+                        if (check == true) {
+                            id = Integer.parseInt(idTextField.getText());
+                            songListServiceJPA.delete(id);
+                        } else {
+                            JOptionPane.showMessageDialog(frame, "Error. Please input an integer.");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Error. Text field is empty.");
+                    }
                 } catch (Exception exception) {
                     exception.printStackTrace();
+                    JOptionPane.showMessageDialog(frame, "Error. Entry may not exist.");
                 }
             }
         });
@@ -124,16 +146,14 @@ public class SongListGui {
             public void windowOpened(WindowEvent we) {
                 updateButton.setVisible(false);
                 deleteButton.setVisible(false);
-                if (credentials == null) {
-                    createButton.setVisible(false);
-                    return;
-                }
                 CredentialsEntity ce = credentials.get(0);
                 if (isAdmin(ce)) {
                     updateButton.setVisible(true);
                     deleteButton.setVisible(true);
                 } else if (isUser(ce)) {
                     updateButton.setVisible(true);
+                } else {
+                    createButton.setVisible(false);
                 }
             }
 
