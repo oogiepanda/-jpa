@@ -41,6 +41,11 @@
       <version>1.3</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr-complete</artifactId>
+      <version>3.5.2</version>
+    </dependency>
   </dependencies>
 
   <build>
