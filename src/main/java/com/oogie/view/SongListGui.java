@@ -176,19 +176,19 @@ public class SongListGui {
         SongListEntity songListEntity = new SongListEntity();
         if (!songNameTextField.getText().isEmpty()) {
             songListEntity.setSongName(songNameTextField.getText());
-            if (!musicianTextField.getText().isEmpty()) {
-                songListEntity.setMusician(musicianTextField.getText());
-            }
-            if (!yearTextField.getText().isEmpty()) {
-                Integer yearInt = Integer.parseInt(yearTextField.getText());
-                songListEntity.setYear(yearInt);
-            }
-            if (!albumTextField.getText().isEmpty()) {
-                songListEntity.setAlbum(albumTextField.getText());
-            }
-            if (!genreTextField.getText().isEmpty()) {
-                songListEntity.setGenre(genreTextField.getText());
-            }
+        }
+        if (!musicianTextField.getText().isEmpty()) {
+            songListEntity.setMusician(musicianTextField.getText());
+        }
+        if (!yearTextField.getText().isEmpty()) {
+            Integer yearInt = Integer.parseInt(yearTextField.getText());
+            songListEntity.setYear(yearInt);
+        }
+        if (!albumTextField.getText().isEmpty()) {
+            songListEntity.setAlbum(albumTextField.getText());
+        }
+        if (!genreTextField.getText().isEmpty()) {
+            songListEntity.setGenre(genreTextField.getText());
         }
         return songListEntity;
     }
